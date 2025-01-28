@@ -2,6 +2,23 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Permissions -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -12,18 +29,42 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MMITest"
         tools:targetApi="31">
-        <activity
-            android:name=".TestActivities.PhoneDiagnostic"
-            android:exported="false" />
+
+        <!-- Main Activity -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Test Activities -->
+        <activity android:name=".TestActivities.Phonediagnostic" android:exported="false" />
+        <activity android:name=".TestActivities.SimCardTestActivity" android:exported="false" />
+        <activity android:name=".TestActivities.SdCardTestActivity" android:exported="false" />
+        <activity android:name=".TestActivities.LcdTestActivity" android:exported="false" />
+        <activity android:name=".TestActivities.MultiTouchTestActivity" android:exported="false" />
+        <activity android:name=".TestActivities.SingleTouchTestActivity" android:exported="false" />
+        <activity android:name=".TestActivities.FlashLightTestActivity" android:exported="false" />
+        <activity android:name=".TestActivities.ButtonTestActivity" android:exported="false" />
+        <activity android:name=".TestActivities.SpeakerTestActivity" android:exported="false" />
+        <activity android:name=".TestActivities.RecieverTestActivity" android:exported="false" />
+        <activity android:name=".TestActivities.EarphoneTestActivity" android:exported="false" />
+        <activity android:name=".TestActivities.MicTestActivity" android:exported="false" />
+        <activity android:name=".TestActivities.CallTestActivity" android:exported="false" />
+        <activity android:name=".TestActivities.VibrationTestActivity" android:exported="false" />
+        <activity android:name=".TestActivities.GpsTestActivity" android:exported="false" />
+        <activity android:name=".TestActivities.WifiTestActivity" android:exported="false" />
+        <activity android:name=".TestActivities.BlutoothTestActivity" android:exported="false" />
+        <activity android:name=".TestActivities.FingerprintTestActivity" android:exported="false" />
+        <activity android:name=".TestActivities.BatteryStatusTestActivity" android:exported="false" />
+        <activity android:name=".TestActivities.RearCameraTestActivity" android:exported="false" />
+        <activity android:name=".TestActivities.FrontCameraTestActivity" android:exported="false" />
+        <activity android:name=".TestActivities.ProximitySensorTestActivity" android:exported="false" />
+        <activity android:name=".TestActivities.ChargingTestActivity" android:exported="false" />
+
     </application>
 
 </manifest>

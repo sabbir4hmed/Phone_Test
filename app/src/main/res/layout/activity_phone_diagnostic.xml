@@ -7,7 +7,39 @@
     android:layout_height="match_parent"
     android:theme="@style/Theme.AppCompat.Light.NoActionBar"
     android:background="@drawable/bg2"
-    tools:context=".PhoneDiagnostic">
+    tools:context=".MainActivity">
+
+    <LinearLayout
+        android:id="@+id/buttonContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:weightSum="2"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/textButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/button_background"
+            android:text="Text"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/reportButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:background="@drawable/button_background"
+            android:text="Report"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_marginTop="50dp"

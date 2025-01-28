@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TestActivities.BatteryStatusTestActivity">
+
+    <TextView
+        android:id="@+id/battery_level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Battery Level: Unknown"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/battery_status"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/battery_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Status: Unknown"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/battery_health"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/battery_level" />
+
+    <TextView
+        android:id="@+id/battery_health"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Health: Unknown"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/power_source"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/battery_status" />
+
+    <TextView
+        android:id="@+id/power_source"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Power Source: Unknown"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/temperature"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/battery_health" />
+
+    <TextView
+        android:id="@+id/temperature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Temperature: Unknown"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/voltage"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/power_source" />
+
+    <TextView
+        android:id="@+id/voltage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Voltage: Unknown"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/technology"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/temperature" />
+
+    <TextView
+        android:id="@+id/technology"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Technology: Unknown"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/capacity"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/voltage" />
+
+    <TextView
+        android:id="@+id/capacity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Capacity: Unknown"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/buttonContainer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/technology" />
+
+    <LinearLayout
+        android:id="@+id/buttonContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="16dp"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/pass_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/button_bg_pass"
+            android:layout_weight="1"
+            android:text="Pass"/>
+
+        <Button
+            android:id="@+id/fail_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_bg_fail"
+            android:layout_weight="1"
+            android:text="Fail"/>
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
