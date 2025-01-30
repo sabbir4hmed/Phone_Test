@@ -15,6 +15,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.sabbir.walton.mmitest.R;
+import com.sabbir.walton.mmitest.Report.ReportActivity;
+import com.sabbir.walton.mmitest.Report.TestReportManager;
 
 public class Phonediagnostic extends AppCompatActivity {
     // Button declarations with more consistent naming
@@ -32,7 +34,6 @@ public class Phonediagnostic extends AppCompatActivity {
     private int passedTestCount = 0;
     private static final int TOTAL_TESTS = 22;
 
-    // Array of test activities in order
     private final Class<?>[] TEST_ACTIVITIES = {
             SimCardTestActivity.class,
             SdCardTestActivity.class,
@@ -62,7 +63,13 @@ public class Phonediagnostic extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phone_diagnostic);
+        setupWindowSettings();
+        initializeButtons();
+        setupButtonListeners();
+        updateTestCountDisplay();
+    }
 
+    private void setupWindowSettings() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             getWindow().getAttributes().layoutInDisplayCutoutMode =
                     WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
@@ -76,10 +83,6 @@ public class Phonediagnostic extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_VISIBLE
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
-        initializeButtons();
-        setupButtonListeners();
-        updateTestCountDisplay();
     }
 
     private void initializeButtons() {
@@ -167,11 +170,22 @@ public class Phonediagnostic extends AppCompatActivity {
         if (resultCode == RESULT_OK && data != null && data.hasExtra("testResult")) {
             boolean testPassed = data.getBooleanExtra("testResult", false);
             updateTestResult(requestCode, testPassed);
+
+            // Update test report data
+            String testName = getTestName(requestCode);
+            TestReportManager.getInstance().updateTestStatus(testName, testPassed);
+
             if (testPassed) {
                 passedTestCount++;
                 updateTestCountDisplay();
             }
         }
+
+        if (isFullTestRunning) {
+            currentTestIndex++;
+            startNextTest();
+        }
+
 
         if (isFullTestRunning) {
             currentTestIndex++;
@@ -220,9 +234,36 @@ public class Phonediagnostic extends AppCompatActivity {
         }
     }
 
+    private String getTestName(int testIndex) {
+        switch (testIndex) {
+            case 0: return "Sim Card Test";
+            case 1: return "SD Card Test";
+            case 2: return "LCD Test";
+            case 3: return "Multi Touch Test";
+            case 4: return "Single Touch Test";
+            case 5: return "Flash Light Test";
+            case 6: return "Key Test";
+            case 7: return "Speaker Test";
+            case 8: return "Receiver Test";
+            case 9: return "Earphone Test";
+            case 10: return "MIC Test";
+            case 11: return "Call Test";
+            case 12: return "Vibration Test";
+            case 13: return "Location Test";
+            case 14: return "Wi-Fi Test";
+            case 15: return "Bluetooth Test";
+            case 16: return "Fingerprint Test";
+            case 17: return "Battery Status Test";
+            case 18: return "Rear Camera Test";
+            case 19: return "Front Camera Test";
+            case 20: return "Proximity Sensor Test";
+            case 21: return "Charging Test";
+            default: return "Unknown Test";
+        }
+    }
+
     private void handleReportButton() {
-        // Implement report generation functionality
-        String reportMessage = String.format("Total Tests: %d\nPassed Tests: %d", TOTAL_TESTS, passedTestCount);
-        Toast.makeText(this, reportMessage, Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(this, ReportActivity.class);
+        startActivity(intent);
     }
 }
