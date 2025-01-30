@@ -26,6 +26,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/button_background"
             android:text="Start Recording"
+            android:textColor="@color/black"
             android:layout_marginBottom="10dp"
             android:layout_marginRight="5dp"
             android:layout_marginLeft="5dp"/>
@@ -36,6 +37,7 @@
             android:background="@drawable/button_background"
             android:layout_height="wrap_content"
             android:text="Stop Recording"
+            android:textColor="@color/black"
             android:layout_marginBottom="10dp"
             android:layout_marginRight="5dp"
             android:layout_marginLeft="5dp"/>
@@ -46,6 +48,7 @@
             android:background="@drawable/button_background"
             android:layout_height="wrap_content"
             android:text="Play Recording"
+            android:textColor="@color/black"
             android:layout_marginBottom="10dp"
             android:layout_marginRight="5dp"
             android:layout_marginLeft="5dp"/>
