@@ -11,6 +11,8 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.sabbir.walton.mmitest.R;
+
 public class FlashLightTestActivity extends AppCompatActivity {
 
     private Button toggleFlashButton;

@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.media.session.MediaButtonReceiver;
+import androidx.media.session.MediaButtonReceiver;
+import com.sabbir.walton.mmitest.R;
 
 public class EarphoneTestActivity extends AppCompatActivity {
 

@@ -15,6 +15,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
+import com.sabbir.walton.mmitest.R;
+
 import java.util.List;
 
 public class SimCardTestActivity extends AppCompatActivity {

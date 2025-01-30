@@ -20,6 +20,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.sabbir.walton.mmitest.R;
+
 public class MultiTouchTestActivity extends AppCompatActivity {
 
     private MultiTouchView multiTouchView;

@@ -12,6 +12,8 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.sabbir.walton.mmitest.R;
+
 public class VibrationTestActivity extends AppCompatActivity {
 
     private Button vibrateButton, passButton, failButton;

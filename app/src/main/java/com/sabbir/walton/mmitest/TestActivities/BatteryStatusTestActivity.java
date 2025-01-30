@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.sabbir.walton.mmitest.R;
+
 public class BatteryStatusTestActivity extends AppCompatActivity {
 
     private TextView batteryLevelText;
