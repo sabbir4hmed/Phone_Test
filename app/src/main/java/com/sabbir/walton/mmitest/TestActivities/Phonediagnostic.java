@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -23,10 +24,13 @@ public class Phonediagnostic extends AppCompatActivity {
     private Button vibrationButton, gpsButton, wifiButton, bluetoothButton;
     private Button fingerprintButton, batteryButton, rearCameraButton, frontCameraButton;
     private Button proximitySensorButton, chargingButton, fullTestButton;
-    private Button textButton, reportButton;
+    private TextView testCountTextView;
+    private Button reportButton;
 
     private boolean isFullTestRunning = false;
     private int currentTestIndex = 0;
+    private int passedTestCount = 0;
+    private static final int TOTAL_TESTS = 22;
 
     // Array of test activities in order
     private final Class<?>[] TEST_ACTIVITIES = {
@@ -59,12 +63,11 @@ public class Phonediagnostic extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phone_diagnostic);
 
-        // Allow layout to extend into the cutout area
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            getWindow().getAttributes().layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+            getWindow().getAttributes().layoutInDisplayCutoutMode =
+                    WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
         }
 
-        // Apply Immersive Mode
         getWindow().getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -76,9 +79,11 @@ public class Phonediagnostic extends AppCompatActivity {
 
         initializeButtons();
         setupButtonListeners();
+        updateTestCountDisplay();
     }
 
     private void initializeButtons() {
+        testCountTextView = findViewById(R.id.testCountTextView);
         simCardButton = findViewById(R.id.simCardTestButton);
         sdCardButton = findViewById(R.id.sdCardTestButton);
         lcdButton = findViewById(R.id.lcdTestButton);
@@ -102,23 +107,17 @@ public class Phonediagnostic extends AppCompatActivity {
         proximitySensorButton = findViewById(R.id.PsTestButton);
         chargingButton = findViewById(R.id.ctTestButton);
         fullTestButton = findViewById(R.id.fullTestButton);
-        textButton = findViewById(R.id.textButton);
         reportButton = findViewById(R.id.reportButton);
     }
 
     private void setupButtonListeners() {
-        // Set individual test button listeners
         for (int i = 0; i < TEST_ACTIVITIES.length; i++) {
             final int testIndex = i;
             getButtonForTest(testIndex).setOnClickListener(v ->
                     startTest(TEST_ACTIVITIES[testIndex], testIndex));
         }
 
-        // Set full test button listener
         fullTestButton.setOnClickListener(v -> startFullTestSequence());
-
-        // Set text and report button listeners
-        textButton.setOnClickListener(v -> handleTextButton());
         reportButton.setOnClickListener(v -> handleReportButton());
     }
 
@@ -134,8 +133,18 @@ public class Phonediagnostic extends AppCompatActivity {
         }
         isFullTestRunning = true;
         currentTestIndex = 0;
-        setImmersiveMode(true);
+        passedTestCount = 0;
+        resetAllButtonColors();
         startNextTest();
+    }
+
+    private void resetAllButtonColors() {
+        for (int i = 0; i < TEST_ACTIVITIES.length; i++) {
+            Button button = getButtonForTest(i);
+            if (button != null) {
+                button.setBackgroundResource(R.drawable.button_background);
+            }
+        }
     }
 
     private void startNextTest() {
@@ -148,23 +157,7 @@ public class Phonediagnostic extends AppCompatActivity {
 
     private void completeFullTest() {
         isFullTestRunning = false;
-        setImmersiveMode(false);
         Toast.makeText(this, "Full Test completed", Toast.LENGTH_SHORT).show();
-    }
-
-    private void setImmersiveMode(boolean enable) {
-        View decorView = getWindow().getDecorView();
-        if (enable) {
-            decorView.setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
-                            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
-                            View.SYSTEM_UI_FLAG_FULLSCREEN |
-                            View.SYSTEM_UI_FLAG_HIDE_NAVIGATION |
-                            View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-            );
-        } else {
-            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-        }
     }
 
     @Override
@@ -172,7 +165,12 @@ public class Phonediagnostic extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK && data != null && data.hasExtra("testResult")) {
-            updateTestResult(requestCode, data.getBooleanExtra("testResult", false));
+            boolean testPassed = data.getBooleanExtra("testResult", false);
+            updateTestResult(requestCode, testPassed);
+            if (testPassed) {
+                passedTestCount++;
+                updateTestCountDisplay();
+            }
         }
 
         if (isFullTestRunning) {
@@ -185,6 +183,12 @@ public class Phonediagnostic extends AppCompatActivity {
         Button testButton = getButtonForTest(testIndex);
         if (testButton != null) {
             testButton.setBackgroundColor(passed ? Color.GREEN : Color.RED);
+        }
+    }
+
+    private void updateTestCountDisplay() {
+        if (testCountTextView != null) {
+            testCountTextView.setText(String.format("Test Pass: %d/%d", passedTestCount, TOTAL_TESTS));
         }
     }
 
@@ -216,14 +220,9 @@ public class Phonediagnostic extends AppCompatActivity {
         }
     }
 
-    private void handleTextButton() {
-        // Implement text button functionality
-        Toast.makeText(this, "Text button clicked", Toast.LENGTH_SHORT).show();
-    }
-
     private void handleReportButton() {
-        // Implement report button functionality
-        Toast.makeText(this, "Report button clicked", Toast.LENGTH_SHORT).show();
+        // Implement report generation functionality
+        String reportMessage = String.format("Total Tests: %d\nPassed Tests: %d", TOTAL_TESTS, passedTestCount);
+        Toast.makeText(this, reportMessage, Toast.LENGTH_LONG).show();
     }
 }
-
