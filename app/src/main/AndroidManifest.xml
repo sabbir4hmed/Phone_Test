@@ -29,6 +29,9 @@
         android:name="android.permission.READ_SMS"
         tools:ignore="PermissionImpliesUnsupportedChromeOsHardware" />
 
+    <uses-feature android:name="android.hardware.camera" android:required="true" />
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -39,6 +42,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MMITest"
         tools:targetApi="31">
+        <activity
+            android:name=".BarCode.BarcodeScannerActivity"
+            android:exported="false" />
         <activity
             android:name=".Report.ReportActivity"
             android:exported="false" />
