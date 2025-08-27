@@ -2,6 +2,7 @@ package com.sabbir.walton.mmitest.TestActivities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.AssetFileDescriptor;
 import android.media.AudioAttributes;
 import android.media.AudioFocusRequest;
 import android.media.AudioManager;
@@ -14,6 +15,8 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.sabbir.walton.mmitest.R;
+
+import java.io.IOException;
 
 public class RecieverTestActivity extends AppCompatActivity {
 
@@ -35,60 +38,61 @@ public class RecieverTestActivity extends AppCompatActivity {
 
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
-        mediaPlayer = MediaPlayer.create(this, R.raw.sound);
+        // --- MediaPlayer setup using modern AudioAttributes ---
+        mediaPlayer = new MediaPlayer();
+        AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                .build();
+        mediaPlayer.setAudioAttributes(audioAttributes);
 
-        mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-            @Override
-            public boolean onError(MediaPlayer mp, int what, int extra) {
-                // Handle errors
-                return false;
+        try {
+            AssetFileDescriptor afd = getResources().openRawResourceFd(R.raw.sound);
+            if (afd != null) {
+                mediaPlayer.setDataSource(afd.getFileDescriptor(), afd.getStartOffset(), afd.getLength());
+                afd.close();
+                mediaPlayer.prepare();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        mediaPlayer.setOnErrorListener((mp, what, extra) -> false);
+
+        playSoundButton.setOnClickListener(view -> {
+            if (mediaPlayer != null) {
+                requestAudioFocus();
+
+                // Force audio to earpiece
+                audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
+                audioManager.setSpeakerphoneOn(false);
+
+                // Max volume for earpiece
+                int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL);
+                audioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL, maxVolume, 0);
+
+                mediaPlayer.start();
             }
         });
 
-        playSoundButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mediaPlayer != null) {
-                    requestAudioFocus();
-                    if (audioManager.getMode() != AudioManager.MODE_IN_COMMUNICATION) {
-                        audioManager.setMode(AudioManager.MODE_IN_COMMUNICATION);
-                    }
-                    audioManager.setSpeakerphoneOn(false); // Set speakerphone to false to play in ear speaker
+        passButton.setOnClickListener(view -> cleanupAndFinish(true));
+        failButton.setOnClickListener(view -> cleanupAndFinish(false));
+    }
 
-                    // Set volume to maximum for earpiece
-                    int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL);
-                    audioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL, maxVolume, 0);
+    private void cleanupAndFinish(boolean result) {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
+        abandonAudioFocus();
 
-                    mediaPlayer.start();
-                }
-            }
-        });
+        // Reset audio routing
+        audioManager.setMode(AudioManager.MODE_NORMAL);
+        audioManager.setSpeakerphoneOn(false);
 
-        passButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mediaPlayer != null) {
-                    mediaPlayer.stop();
-                    mediaPlayer.release();
-                    abandonAudioFocus();
-                }
-                setResult(RESULT_OK, new Intent().putExtra("testResult", true));
-                finish();
-            }
-        });
-
-        failButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (mediaPlayer != null) {
-                    mediaPlayer.stop();
-                    mediaPlayer.release();
-                    abandonAudioFocus();
-                }
-                setResult(RESULT_OK, new Intent().putExtra("testResult", false));
-                finish();
-            }
-        });
+        setResult(RESULT_OK, new Intent().putExtra("testResult", result));
+        finish();
     }
 
     private void requestAudioFocus() {
@@ -101,32 +105,19 @@ public class RecieverTestActivity extends AppCompatActivity {
             audioFocusRequest = new AudioFocusRequest.Builder(AudioManager.AUDIOFOCUS_GAIN_TRANSIENT)
                     .setAudioAttributes(audioAttributes)
                     .setWillPauseWhenDucked(true)
-                    .setOnAudioFocusChangeListener(new AudioManager.OnAudioFocusChangeListener() {
-                        @Override
-                        public void onAudioFocusChange(int focusChange) {
-                            // Handle audio focus changes
-                        }
+                    .setOnAudioFocusChangeListener(focusChange -> {
+                        // Optional: handle focus changes
                     })
                     .build();
 
-            int result = audioManager.requestAudioFocus(audioFocusRequest);
-            if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                // Audio focus granted
-            } else {
-                // Audio focus denied
-            }
+            audioManager.requestAudioFocus(audioFocusRequest);
         } else {
-            int result = audioManager.requestAudioFocus(null, AudioManager.STREAM_VOICE_CALL, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
-            if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-                // Audio focus granted
-            } else {
-                // Audio focus denied
-            }
+            audioManager.requestAudioFocus(null, AudioManager.STREAM_VOICE_CALL, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
         }
     }
 
     private void abandonAudioFocus() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && audioFocusRequest != null) {
             audioManager.abandonAudioFocusRequest(audioFocusRequest);
         } else {
             audioManager.abandonAudioFocus(null);
@@ -141,5 +132,9 @@ public class RecieverTestActivity extends AppCompatActivity {
             mediaPlayer = null;
         }
         abandonAudioFocus();
+
+        // Reset audio routing in case activity destroyed unexpectedly
+        audioManager.setMode(AudioManager.MODE_NORMAL);
+        audioManager.setSpeakerphoneOn(false);
     }
 }
