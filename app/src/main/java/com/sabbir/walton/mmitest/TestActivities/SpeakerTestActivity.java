@@ -1,6 +1,8 @@
 package com.sabbir.walton.mmitest.TestActivities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
@@ -34,6 +36,10 @@ public class SpeakerTestActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (mediaPlayer != null) {
+                    AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+                    audioManager.setMode(AudioManager.MODE_NORMAL);
+                    audioManager.setSpeakerphoneOn(true);
+
                     mediaPlayer.start();
                 }
             }
